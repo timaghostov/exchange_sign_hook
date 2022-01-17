@@ -5,6 +5,7 @@ use erased_serde::Serialize;
 use crate::hook::model::DataBinance;
 use crate::hook::model::DataBinancePay;
 use crate::hook::model::DataKraken;
+use crate::hook::model::Query;
 use crate::hook::types::AppSign;
 use crate::hook::types::AsyncResult;
 use crate::hook::types::FnClosureBinance;
@@ -64,25 +65,17 @@ impl SignClosure {
         (*inner).sign_binance_pay(data)
     }
 
-    pub fn sign_binance<J>(&self, params: J) -> FnResult
-    where
-        J: Serialize + Sync + Send + 'static,
-    {
-        let data = DataBinance {
-            params: Box::new(params),
-        };
+    pub fn sign_binance(&self, query: Query) -> FnResult {
+        let data = DataBinance { query };
         let inner = Arc::clone(&self.inner);
         (*inner).sign_binance(data)
     }
 
-    pub fn sign_kraken<J>(&self, nonce: u64, method: String, params: J) -> FnResult
-    where
-        J: Serialize + Sync + Send + 'static,
-    {
+    pub fn sign_kraken(&self, nonce: u64, method: String, query: Query) -> FnResult {
         let data = DataKraken {
             nonce,
             method,
-            params: Box::new(params),
+            query,
         };
         let inner = Arc::clone(&self.inner);
         (*inner).sign_kraken(data)
