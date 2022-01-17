@@ -1,5 +1,8 @@
-#[derive(Debug)]
+use thiserror::Error;
+
+#[derive(Debug, Error)]
 pub enum SignError {
+    #[error("Sign Error: {0}")]
     Other(String),
 }
 
